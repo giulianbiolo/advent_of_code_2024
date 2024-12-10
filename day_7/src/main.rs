@@ -1,6 +1,7 @@
+#[derive(Debug)]
 struct Equation {
     result: u64,
-    factors: Vec<u64>
+    factors: Vec<u64>,
 }
 
 fn load_data(filename: &str) -> Vec<Equation> {
@@ -30,59 +31,52 @@ fn load_data(filename: &str) -> Vec<Equation> {
 
 fn part_one(equations: &Vec<Equation>) -> u64 {
     fn is_valid(eq: &Equation) -> bool {
-        let combinations = 2_u64.pow(eq.factors.len() as u32);
-        for i in 0..combinations as u64 {
-            let mut sum: u64 = 0_u64;
-            for j in 0..eq.factors.len() {
-                match i as u64 / 2_u64.pow(j as u32) % 2 {
-                    0 => sum += eq.factors[j],
-                    1 => sum *= eq.factors[j],
-                    _ => panic!("Invalid operation"),
-                }
+        let facts: Vec<u64> = eq.factors.clone();
+        let mut factors: std::slice::Iter<'_, u64> = facts.iter();
+        let mut possibles: Vec<u64> = vec![factors.next().unwrap().clone()];
+        while let Some(curr) = factors.next() {
+            let mut temp: Vec<u64> = vec![];
+            for p in possibles {
+                let next_values: Vec<u64> = vec![
+                    p + curr,
+                    p * curr,
+                ];
+                temp.extend(next_values.iter().filter(|v| **v <= eq.result).cloned());
             }
-            if sum as u64 == eq.result {
-                return true;
-            }
+            possibles = temp;
         }
-        false
+        possibles.contains(&eq.result)
     }
     equations
         .iter()
         .filter(|eq| is_valid(&eq))
-        .map(|eq| eq.result as u64)
+        .map(|eq| eq.result)
         .sum()
 }
 
 fn part_two(equations: &Vec<Equation>) -> u64 {
     fn is_valid(eq: &Equation) -> bool {
-        let combinations = 3_u64.pow(eq.factors.len() as u32);
-        for i in 0..combinations as u64 {
-            let mut sum: u64 = eq.factors[0];
-            let mut operations: String = String::new();
-            for j in 1..eq.factors.len() {
-                match i as u64 / 3_u64.pow(j as u32) % 3 {
-                    0 => {sum += eq.factors[j]; operations.push_str("+");},
-                    1 => {sum *= eq.factors[j]; operations.push_str("*");},
-                    2 => {
-                        let mut s: String = sum.to_string();
-                        s.push_str(&eq.factors[j].to_string());
-                        sum = s.parse::<u64>().unwrap();
-                        operations.push_str("|");
-                    }
-                    _ => panic!("Invalid operation"),
-                }
+        let facts: Vec<u64> = eq.factors.clone();
+        let mut factors: std::slice::Iter<'_, u64> = facts.iter();
+        let mut possibles: Vec<u64> = vec![factors.next().unwrap().clone()];
+        while let Some(curr) = factors.next() {
+            let mut temp: Vec<u64> = vec![];
+            for p in possibles {
+                let next_values: Vec<u64> = vec![
+                    p + curr,
+                    p * curr,
+                    format!("{}{}", p, curr).parse::<u64>().unwrap(),
+                ];
+                temp.extend(next_values.iter().filter(|v| **v <= eq.result).cloned());
             }
-            if sum as u64 == eq.result {
-                println!("Equation: {:?} : {} = {}", eq.factors, operations, sum);
-                return true;
-            }
+            possibles = temp;
         }
-        false
+        possibles.contains(&eq.result)
     }
     equations
         .iter()
         .filter(|eq| is_valid(&eq))
-        .map(|eq| eq.result as u64)
+        .map(|eq| eq.result)
         .sum()
 }
 
