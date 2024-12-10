@@ -90,7 +90,7 @@ fn part_one(map: &Map) -> usize {
     }
     let mut antinodes: HashSet<(usize, usize)> = HashSet::new();
     for (x, row) in map.iter().enumerate() {
-        for (y, tile) in row.iter().enumerate() {
+        for (y, _) in row.iter().enumerate() {
             // ? For each tile we compute the distance_antennas map where each character of an antenna is mapped to a list of distances from that tile to the antennas.
             let distances: HashMap<char, Vec<usize>> = antennas
                 .iter()
@@ -141,7 +141,7 @@ fn part_two(map: &Map) -> usize {
     }
     let mut antinodes: HashSet<(usize, usize)> = HashSet::new();
     for (x, row) in map.iter().enumerate() {
-        for (y, tile) in row.iter().enumerate() {
+        for (y, _) in row.iter().enumerate() {
             let distances: HashMap<char, Vec<usize>> = antennas
                 .iter()
                 .map(|(antenna, coords)| {
@@ -155,8 +155,8 @@ fn part_two(map: &Map) -> usize {
 
             // ? now distances = {'0': [1, 2, 3], '1': [2, 3, 4], '2': [3, 4, 5], ...}
             for (antenna, dists) in distances.iter() {
-                for (i, d1) in dists.iter().enumerate() {
-                    for (j, d2) in dists.iter().skip(i + 1).enumerate() {
+                for (i, _) in dists.iter().enumerate() {
+                    for (j, _) in dists.iter().skip(i + 1).enumerate() {
                         // ? if the two antennas are in line with one another and with the tile then it is in fact an antinode.
                         let (x1, y1) = antennas[antenna][i];
                         let (x2, y2) = antennas[antenna][j + i + 1];
