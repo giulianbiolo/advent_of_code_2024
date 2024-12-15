@@ -44,7 +44,7 @@ fn load_data(filename: &str) -> Vec<Prize> {
 
 fn part_one(prizes: &Vec<Prize>) -> i64 {
     let mut sum: i64 = 0;
-    for (idx, prize) in prizes.iter().enumerate() {
+    for (_, prize) in prizes.iter().enumerate() {
         let mut min_cost = std::i64::MAX;
         for i in 0..100 {
             for j in 0..100 {
@@ -68,7 +68,7 @@ fn part_one(prizes: &Vec<Prize>) -> i64 {
 
 fn part_two(prizes: &Vec<Prize>) -> i128 {
     let mut sum: i128 = 0;
-    for (idx, prize) in prizes.iter().enumerate() {
+    for (_, prize) in prizes.iter().enumerate() {
         let prize: Prize = Prize {
             btn_a: (prize.btn_a.0, prize.btn_a.1),
             btn_b: (prize.btn_b.0, prize.btn_b.1),
